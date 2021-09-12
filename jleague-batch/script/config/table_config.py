@@ -26,12 +26,6 @@ table_struct_list = {
         }
     },
     "player":{
-        "id":{
-            "type" : "INT",
-            "not_null" : True,
-            "primary_key" : True,
-            "auto_increment" : True
-        },
         "team_id":{
             "type" : "INT",
             "not_null" : True,
@@ -39,28 +33,28 @@ table_struct_list = {
             "auto_increment" : False
         },
         "name_ja":{
-            "type" : "VARCHAR(50)",
+            "type" : "VARCHAR(100)",
             "not_null" : True,
             "primary_key" : False,
             "auto_increment" : False
         },
         "name_en":{
-            "type" : "VARCHAR(50)",
-            "not_null" : True,
-            "primary_key" : False,
-            "auto_increment" : False
-        },
-        "position":{
-            "type" : "ENUM('GK','DF','MF','FW')",
+            "type" : "VARCHAR(100)",
             "not_null" : True,
             "primary_key" : False,
             "auto_increment" : False
         },
         "number":{
             "type" : "INT",
-            "not_null" : True,
+            "not_null" : False,
             "primary_key" : False,
             "auto_increment" : False
-        }
+        },
+        "id":{
+            "type" : "INT",
+            "not_null" : True,
+            "primary_key" : True,
+            "auto_increment" : True
+        },
     }
 }
