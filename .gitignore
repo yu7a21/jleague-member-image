@@ -1,1 +1,4 @@
 jleague-db/db-data/*
+jleague-batch/script/__pycache__
+jleague-batch/script/config/__pycache__
+.vscode
