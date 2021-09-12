@@ -1,0 +1,13 @@
+version: '3.8'
+
+services: 
+  jleague-db:
+    build: ./jleague-db
+    ports: 
+      - 8030:3306
+    volumes:
+      - ./jleague-db/db-data:/jleague/var/lib/mysql
+  jleague-batch:
+    build: ./jleague-batch
+    volumes:
+      - ./jleague-batch:/application
