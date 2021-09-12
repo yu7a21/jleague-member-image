@@ -6,9 +6,9 @@ import pymysql.cursors as cursors
 
 class Db():
     def __init__ (self):
-        self.table_config = {table_config.team["table_name"] : table_config.team}
+        self.table_config = table_config.table_struct_list
     
-    def exec_query(self, query):
+    def exec_post_query(self, query):
         connect = pymysql.connect(
             user=config.db_user,
             passwd=config.db_password,
@@ -23,9 +23,24 @@ class Db():
                 cursor.execute(query)
             connect.commit()
     
+    def exec_get_query(self, query):
+        connect = pymysql.connect(
+            user=config.db_user,
+            passwd=config.db_password,
+            host=config.db_host,
+            db=config.db_database,
+            charset="utf8",
+            cursorclass=cursors.DictCursor
+        )
+
+        with connect:
+            with connect.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+        return result
+
     def create_table(self, table_name):
-        table_config = self.table_config[table_name]
-        columns = table_config["columns"]
+        columns = self.table_config[table_name]
 
         column_query_list = []
         for column in columns:
@@ -36,10 +51,10 @@ class Db():
 
         query = f"{init_query}({column_query})"
 
-        self.exec_query(query)
+        self.exec_post_query(query)
     
     def insert(self, table_name, row_data):
-        table_config = self.table_config[table_name]["columns"]
+        table_config = self.table_config[table_name]
 
         insert_query_list = []
         query_list = []
@@ -57,12 +72,17 @@ class Db():
         insert_query = ",".join(query_list)
 
         query = f"{init_query} {insert_query}"
-        self.exec_query(query)
+        self.exec_post_query(query)
+    
+    def get_all_items(self, table_name):
+        query = f"SELECT * FROM {table_name}"
+        return self.exec_get_query(query)
     
     def make_create_column_query(self, name, column):
         type = column["type"]
         not_null = "NOT NULL" if column["not_null"] else ""
         prymary_key = "PRIMARY KEY" if column["primary_key"] else ""
+        auto_increment = "AUTO_INCREMENT" if column["auto_increment"] else ""
 
-        return f"{name} {type} {not_null} {prymary_key}"
+        return f"{name} {type} {not_null} {prymary_key} {auto_increment}"
 
