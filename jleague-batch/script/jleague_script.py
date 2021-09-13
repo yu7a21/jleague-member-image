@@ -1,5 +1,7 @@
 import requests
+import json
 from bs4 import BeautifulSoup
+from logging import getLogger ,config
 
 from db import Db
 
@@ -7,8 +9,13 @@ from db import Db
 def get_players():
     """
     JLeague Data Siteから全選手データを取得する
-    
+
     """
+    with open("./config/log_config.json", "r") as f:
+        log_conf = json.load(f)
+    config.dictConfig(log_conf)
+    logger = getLogger(__name__)
+
     db = Db()
     team_list = db.get_all_items("team")
 
@@ -22,6 +29,9 @@ def get_players():
         select_value_team = str(team_id)
         display_name = league + "リーグ"
         display_name_team = team["name"]
+
+        logger.info(f"\"{display_name_team}\"のデータ取得開始")
+
         
         url = players_page_url.format(select_value, select_value_team, display_name, display_name_team)
         response = requests.get(url)
@@ -45,8 +55,11 @@ def get_players():
                 name_en = player_info[1]
                 number = "999"
             player_list.append({"team_id":team_id, "name_ja":name_ja, "name_en":name_en, "number":number})
-        
+        logger.info(f"\"{display_name_team}\"のデータ取得終了")
+    
+    logger.info("DBへの保存開始")
     db.insert("player", player_list)
+    logger.info("DBへの保存終了")
 
 if __name__ == "__main__":
     get_players()
