@@ -9,10 +9,18 @@ services:
       - ./jleague-db/db-data:/jleague/var/lib/mysql
   jleague-batch:
     build: ./jleague-batch
-    ports:
-      - 8070:8070
     environment: 
       DB_HOST: jleague-db
       DB_USER: user
       DB_DATABASE: jleague-app
       DB_PASSWORD: password
+  jleague-api:
+    build: ./jleague-api
+    ports:
+      - 8070:8070
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: local
+    command: flask run --host=0.0.0.0 --port=8070
+    volumes:
+      - ./jleague-api:/application

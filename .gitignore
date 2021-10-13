@@ -3,3 +3,5 @@ jleague-batch/script/__pycache__
 jleague-batch/script/config/__pycache__
 .vscode
 *.txt
+
+jleague-api/flaskr/__pycache__
