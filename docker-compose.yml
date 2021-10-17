@@ -21,6 +21,10 @@ services:
     environment:
       FLASK_APP: flaskr
       FLASK_ENV: local
+      DB_HOST: jleague-db
+      DB_USER: user
+      DB_DATABASE: jleague-app
+      DB_PASSWORD: password
     command: flask run --host=0.0.0.0 --port=8070
     volumes:
       - ./jleague-api:/application
