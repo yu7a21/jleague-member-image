@@ -19,7 +19,7 @@ services:
     ports:
       - 8070:8070
     environment:
-      FLASK_APP: flaskr
+      FLASK_APP: app.py
       FLASK_ENV: local
       DB_HOST: jleague-db
       DB_USER: user

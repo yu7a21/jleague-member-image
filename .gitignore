@@ -2,6 +2,6 @@ jleague-db/db-data/*
 jleague-batch/script/__pycache__
 jleague-batch/script/config/__pycache__
 .vscode
-*.txt
+batch_log.txt
 
-jleague-api/flaskr/__pycache__
+jleague-api/*__pycache__
