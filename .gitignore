@@ -1,5 +1,5 @@
-jleague-db/db-data/*
-jleague-batch/script/__pycache__
-jleague-batch/script/config/__pycache__
 .vscode
-*.txt
+jleague-db/db-data/*
+batch_log.txt
+
+*__pycache__
