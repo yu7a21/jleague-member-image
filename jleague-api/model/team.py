@@ -5,3 +5,4 @@ class Team(db.Model):
     name = db.Column(db.String(50), nullable=False)
     short_name = db.Column(db.String(50), nullable=False)
     league = db.Column(db.String(50), nullable=False)
+    color = db.Column(db.String(50), nullable=False)

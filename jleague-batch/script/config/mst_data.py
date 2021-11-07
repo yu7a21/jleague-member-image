@@ -3,341 +3,399 @@ team = [
         "id":1,
         "name":"鹿島アントラーズ",
         "short_name":"鹿島",
-        "league":"J1"
+        "league":"J1",
+        "color":"183,24,64"
     },
     {
         "id":2,
         "name":"ジェフユナイテッド千葉",
         "short_name":"千葉",
-        "league":"J2"
+        "league":"J2",
+        "color":"254,225,0"
     },
     {
         "id":3,
         "name":"浦和レッズ",
         "short_name":"浦和",
-        "league":"J1"
+        "league":"J1",
+        "color":"231,0,43"
     },
     {
         "id":4,
         "name":"東京ヴェルディ",
         "short_name":"東京V",
-        "league":"J2"
+        "league":"J2",
+        "color":"3,118,75"
     },
     {
         "id":5,
         "name":"横浜F・マリノス",
         "short_name":"横浜FM",
-        "league":"J1"
+        "league":"J1",
+        "color":"0,57,137"
     },
     {
         "id":7,
         "name":"清水エスパルス",
         "short_name":"清水",
-        "league":"J1"
+        "league":"J1",
+        "color":"250,165,40"
     },
     {
         "id":8,
         "name":"名古屋グランパス",
         "short_name":"名古屋",
-        "league":"J1"
+        "league":"J1",
+        "color":"218,54,27"
     },
     {
         "id":9,
         "name":"ガンバ大阪",
         "short_name":"G大阪",
-        "league":"J1"
+        "league":"J1",
+        "color":"9,63,166"
     },
     {
         "id":10,
         "name":"サンフレッチェ広島",
         "short_name":"広島",
-        "league":"J1"
+        "league":"J1",
+        "color":"80,49,143"
     },
     {
         "id":11,
         "name":"柏レイソル",
         "short_name":"柏",
-        "league":"J1"
+        "league":"J1",
+        "color":"255,241,0"
     },
     {
         "id":12,
         "name":"湘南ベルマーレ",
         "short_name":"湘南",
-        "league":"J1"
+        "league":"J1",
+        "color":"103,180,100"
     },
     {
         "id":13,
         "name":"ジュビロ磐田",
         "short_name":"磐田",
-        "league":"J2"
+        "league":"J2",
+        "color":"110,157,211"
     },
     {
         "id":14,
         "name":"北海道コンサドーレ札幌",
         "short_name":"札幌",
-        "league":"J1"
+        "league":"J1",
+        "color":"215,0,15"
     },
     {
         "id":18,
         "name":"ヴィッセル神戸",
         "short_name":"神戸",
-        "league":"J1"
+        "league":"J1",
+        "color":"143,10,31"
     },
     {
         "id":20,
         "name":"セレッソ大阪",
         "short_name":"C大阪",
-        "league":"J1"
+        "league":"J1",
+        "color":"212,0,105"
     },
     {
         "id":21,
         "name":"川崎フロンターレ",
         "short_name":"川崎",
-        "league":"J1"
+        "league":"J1",
+        "color":"53,160,217"
     },
     {
         "id":22,
         "name":"FC東京",
         "short_name":"FC東京",
-        "league":"J1"
+        "league":"J1",
+        "color":"33,65,152"
     },
     {
         "id":23,
         "name":"アビスパ福岡",
         "short_name":"福岡",
-        "league":"J2"
+        "league":"J2",
+        "color":"4,64,127"
     },
     {
         "id":24,
         "name":"京都サンガFC",
         "short_name":"京都",
-        "league":"J2"
+        "league":"J2",
+        "color":"116,0,107"
     },
     {
         "id":27,
         "name":"大宮アルディージャ",
         "short_name":"大宮",
-        "league":"J2"
+        "league":"J2",
+        "color":"245,105,0"
     },
     {
         "id":28,
         "name":"ヴァンフォーレ甲府",
         "short_name":"甲府",
-        "league":"J2"
+        "league":"J2",
+        "color":"0,91,172"
     },
     {
         "id":29,
         "name":"モンテディオ山形",
         "short_name":"山形",
-        "league":"J2"
+        "league":"J2",
+        "color":"15,34,139"
     },
     {
         "id":31,
         "name":"大分トリニータ",
         "short_name":"大分",
-        "league":"J1"
+        "league":"J1",
+        "color":"20,11,140"
     },
     {
         "id":33,
         "name":"サガン鳥栖",
         "short_name":"鳥栖",
-        "league":"J1"
+        "league":"J1",
+        "color":"0,150,210"
     },
     {
         "id":34,
         "name":"横浜FC",
         "short_name":"横浜FC",
-        "league":"J1"
+        "league":"J1",
+        "color":"0,160,228"
     },
     {
         "id":35,
         "name":"ザスパクサツ群馬",
         "short_name":"群馬",
-        "league":"J2"
+        "league":"J2",
+        "color":"22,51,95"
     },
     {
         "id":36,
         "name":"徳島ヴォルティス",
         "short_name":"徳島",
-        "league":"J1"
-    },    {
+        "league":"J1",
+        "color":"17,17,131"
+    },
+    {
         "id":37,
         "name":"愛媛FC",
         "short_name":"愛媛",
-        "league":"J2"
+        "league":"J2",
+        "color":"250,146,35"
     },
     {
         "id":38,
         "name":"ロアッソ熊本",
         "short_name":"熊本",
-        "league":"J2"
+        "league":"J2",
+        "color":"231,0,43"
     },
     {
         "id":39,
         "name":"FC岐阜",
         "short_name":"岐阜",
-        "league":"J2"
+        "league":"J2",
+        "color":"0,64,23"
     },
     {
         "id":40,
         "name":"栃木SC",
         "short_name":"栃木",
-        "league":"J2"
+        "league":"J2",
+        "color":"245,241,12"
     },
     {
         "id":41,
         "name":"カターレ富山",
         "short_name":"富山",
-        "league":"J3"
+        "league":"J3",
+        "color":"22,51,95"
     },
     {
         "id":42,
         "name":"ファジアーノ岡山",
         "short_name":"岡山",
-        "league":"J2"
+        "league":"J2",
+        "color":"181,1,62"
     },
     {
         "id":43,
         "name":"ギラヴァンツ北九州",
         "short_name":"北九州",
-        "league":"J2"
+        "league":"J2",
+        "color":"245,241,12"
     },
     {
         "id":44,
         "name":"ガイナーレ鳥取",
         "short_name":"鳥取",
-        "league":"J3"
+        "league":"J3",
+        "color":"144,238,144"
     },
     {
         "id":45,
         "name":"FC町田ゼルビア",
         "short_name":"町田",
-        "league":"J2"
+        "league":"J2",
+        "color":"0,84,167"
     },
     {
         "id":46,
         "name":"松本山雅FC",
         "short_name":"松本",
-        "league":"J2"
+        "league":"J2",
+        "color":"0,129,55"
     },
     {
         "id":47,
         "name":"V･ファーレン長崎",
         "short_name":"千葉",
-        "league":"J2"
+        "league":"J2",
+        "color":"243,152,0"
     },
     {
         "id":48,
         "name":"カマタマーレ讃岐",
         "short_name":"讃岐",
-        "league":"J3"
+        "league":"J3",
+        "color":"31,47,84"
     },
     {
         "id":54,
         "name":"ベガルタ仙台",
         "short_name":"ベガルタ",
-        "league":"J1"
+        "league":"J1",
+        "color":"252,204,0"
     },
     {
         "id":78,
         "name":"アルビレックス新潟",
         "short_name":"新潟",
-        "league":"J2"
+        "league":"J2",
+        "color":"255,102,0"
     },
     {
         "id":94,
         "name":"水戸ホーリーホック",
         "short_name":"水戸",
-        "league":"J2"
+        "league":"J2",
+        "color":"29,31,144"
     },
     {
         "id":269,
         "name":"いわてグルージャ盛岡",
         "short_name":"盛岡",
-        "league":"J3"
+        "league":"J3",
+        "color":"231,0,43"
     },
     {
         "id":270,
         "name":"ブラウブリッツ秋田",
         "short_name":"秋田",
-        "league":"J2"
+        "league":"J2",
+        "color":"29,31,144"
     },
     {
         "id":271,
         "name":"福島ユナイテッドFC",
         "short_name":"福島",
-        "league":"J3"
+        "league":"J3",
+        "color":"231,0,43"
     },
     {
         "id":272,
         "name":"Y.S.C.C.横浜",
         "short_name":"YS横浜",
-        "league":"J3"
+        "league":"J3",
+        "color":"0,160,228"
     },
     {
         "id":273,
         "name":"SC相模原",
         "short_name":"相模原",
-        "league":"J2"
+        "league":"J2",
+        "color":"0,128,0"
     },
     {
         "id":274,
         "name":"AC長野パルセイロ",
         "short_name":"長野",
-        "league":"J3"
+        "league":"J3",
+        "color":"255,165,0"
     },
     {
         "id":275,
         "name":"ツエーゲン金沢",
         "short_name":"金沢",
-        "league":"J2"
+        "league":"J2",
+        "color":"229,0,9"
     },
     {
         "id":276,
         "name":"藤枝MYFC",
         "short_name":"藤枝",
-        "league":"J3"
+        "league":"J3",
+        "color":"165,155,216"
     },
     {
         "id":277,
         "name":"FC琉球",
         "short_name":"琉球",
-        "league":"J2"
+        "league":"J2",
+        "color":"152,7,71"
     },
     {
         "id":330,
         "name":"レノファ山口FC",
         "short_name":"山口",
-        "league":"J2"
+        "league":"J2",
+        "color":"235,94,2"
     },
     {
         "id":338,
         "name":"鹿児島ユナイテッドFC",
         "short_name":"鹿児島",
-        "league":"J2"
+        "league":"J2",
+        "color":"22,51,95"
     },
     {
         "id":347,
         "name":"アスルクラロ沼津",
         "short_name":"沼津",
-        "league":"J3"
+        "league":"J3",
+        "color":"0,85,255"
     },
     {
         "id":362,
         "name":"ヴァンラーレ八戸",
         "short_name":"八戸",
-        "league":"J3"
+        "league":"J3",
+        "color":"144,238,144"
     },
     {
         "id":369,
         "name":"FC今治",
         "short_name":"今治",
-        "league":"J3"
+        "league":"J3",
+        "color":"0,43,255"
     },
     {
         "id":371,
         "name":"テゲバジャーロ宮崎",
         "short_name":"宮崎",
-        "league":"J3"
+        "league":"J3",
+        "color":"255,255,255"
     }
 ]

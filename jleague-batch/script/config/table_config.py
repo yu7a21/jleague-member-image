@@ -23,6 +23,12 @@ table_struct_list = {
             "not_null" : True,
             "primary_key" : False,
             "auto_increment" : False
+        },
+        "color":{
+            "type" : "VARCHAR(50)",
+            "not_null" : True,
+            "primary_key" : False,
+            "auto_increment" : False
         }
     },
     "player":{
