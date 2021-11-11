@@ -11,13 +11,13 @@ PLAYER_UNIFORM_FOLDER_PATH = f"{RESOURCE_FOLDER_PATH}/player_uniform"
 #ピッチの初期画像
 INIT_FIELD_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/soccer_field.jpeg"
 #ユニの初期画像
-INIT_UNIFORM_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/uniform_white.png"
+DEFAULT_UNIFORM_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/default_uniform.png"
 #フォントファイル
-FONT_PATH = f"{RESOURCE_FOLDER_PATH}/font/smartphoneui.otf"
+FONT_PATH = f"{RESOURCE_FOLDER_PATH}/font/corporatelogo.ttf"
 #チームカラーに色置換したユニ画像
 TEAM_COLOR_UNIFORM_PATH = f"{RESOURCE_FOLDER_PATH}/team_color_uniform.png"
 #完成画像
-FORMATION_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/formation_image.jpeg"
+FORMATION_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/formation_image.png"
 
 
 PLAYER_IMAGE_WIDTH=80 #スタメン画像に表示するときのユニ画像の1辺
@@ -52,17 +52,17 @@ mock_position_data = {
 #座標取得:http://wisteriahill.sakura.ne.jp/OpenCV/getArea4Haartraining/
 mock_position_position_data = {
     "4-4-2":{
-        "RCF": (330,260),
-        "LCF": (330,462),
-        "RW": (566,96),
-        "RCM": (566,260),
-        "LCM": (566,462),
-        "LW": (566,632),
+        "RCF": (290,260),
+        "LCF": (290,462),
+        "RW": (536,96),
+        "RCM": (536,260),
+        "LCM": (536,462),
+        "LW": (536,632),
         "RSB": (801,96),
         "RCB": (801,260),
         "LCB": (801,462),
         "LSB": (801,632),
-        "GK": (1027,378),
+        "GK": (1010,378),
     },
     "4-3-3":{
         "RST": (),
@@ -82,6 +82,7 @@ mock_position_position_data = {
 #TODO:パスは定数化する
 def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data):
     #先に画像色をチームカラーに置換
+    #TODO:DBを見る処理はmodelにかくべき
     color_list = Team.query.filter_by(id=image_info["team_id"]).first().color.split(",")
     team_color = (int(color_list[0]), int(color_list[1]), int(color_list[2]))
     put_uniform_color(team_color)
@@ -134,12 +135,32 @@ def generate_formation_image(formation, team_id, position_name, number):
     #背景のピッチ画像を取得
     formation_image = Image.open(get_resolve_path(FORMATION_IMAGE_PATH))
 
-    formation_image.paste(uniform_image, player_image_position)
+    #ユニ画像の透過を効かせるため、スタメン画像と同じサイズの透明な画像を用意して載せる https://qiita.com/iso12800jp/items/a74852ebfd3041065aeb
+    clear_back_img_for_uniform = Image.new("RGBA", formation_image.size, (255, 255, 255, 0))
+    clear_back_img_for_uniform.paste(uniform_image, player_image_position)
 
-    #選手名を描画
+    #alpha_compositeは両方RGBAじゃないとだめなのでフォーメーション画像もRGBAにする
+    clear_back_img_for_formation = Image.new("RGBA", formation_image.size, (255, 255, 255, 0))
+    clear_back_img_for_formation.paste(formation_image)
+
+    formation_image = Image.alpha_composite(clear_back_img_for_formation, clear_back_img_for_uniform)
+
+    #選手名描画（背景付き）
     draw = ImageDraw.Draw(formation_image)
     font = ImageFont.truetype(get_resolve_path(FONT_PATH), PLAYER_NAME_FONT_SIZE)
-    #TODO:選手名の背景は色つけた方が見やすいかも https://code-de-byouga.hatenablog.com/entry/pillow-text
+
+    #選手名に背景色をつける
+    player_name_area = draw.textsize(player_name, font)
+    name_x = player_name_position[0]
+    name_y = player_name_position[1]
+    #背景のマージン8くらいとっとく
+    name_x_offset = player_name_area[0]/2+8
+    name_y_offset = player_name_area[1]/2+8
+    player_name_backgroud_position = (name_x-name_x_offset, name_y-name_y_offset, name_x+name_x_offset, name_y+name_y_offset)
+    #とりあえず背景は白塗り
+    draw.rectangle(player_name_backgroud_position, fill=(255,255,255))
+
+    #選手名描画
     draw.text(player_name_position, player_name, font=font, fill="black", align="center", anchor="mm")
 
     #編集し終わったピッチ画像を保存
@@ -169,7 +190,7 @@ def put_uniform_color(team_color:tuple):
     :param team_color: [description]
     :type team_color: tuple
     """
-    uniform_img = Image.open(get_resolve_path(INIT_UNIFORM_IMAGE_PATH))
+    uniform_img = Image.open(get_resolve_path(DEFAULT_UNIFORM_IMAGE_PATH))
     default_color = (255,255,255)
     r, g, b, a = uniform_img.split()
 
