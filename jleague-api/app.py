@@ -7,6 +7,7 @@ from config import config
 from error import response_error
 from controller.teamController import team
 from controller.playerController import player
+from controller.generateImageController import generate_image
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{config.db_user}:{config.db_password}@{config.db_host}/{config.db_database}?charset=utf8"
@@ -34,6 +35,10 @@ def players():
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
 
     return player(team_id, team_name)
+
+@app.route('/generate_image')
+def generate_images():
+    return generate_image()
 
 def is_empty_str(str:str):
     return str == ""
