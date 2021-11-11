@@ -79,12 +79,11 @@ mock_position_position_data = {
     }
 }
 
-#TODO:パスは定数化する
 def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data):
-    #先に画像色をチームカラーに置換
     #TODO:DBを見る処理はmodelにかくべき
     color_list = Team.query.filter_by(id=image_info["team_id"]).first().color.split(",")
     team_color = (int(color_list[0]), int(color_list[1]), int(color_list[2]))
+    #先に画像色をチームカラーに置換
     put_uniform_color(team_color)
 
     #背番号を全選手分いれる
@@ -109,6 +108,7 @@ def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_
     #TODO:完成したスタメン画像返す https://takake-blog.com/python-flask/#2
     return "success"
 
+#TODO:もっと分割できるかも
 def generate_formation_image(formation, team_id, position_name, number):
     """
     スタメン画像に1選手のユニ画像・名前を入れる
@@ -127,29 +127,31 @@ def generate_formation_image(formation, team_id, position_name, number):
 
     #各ポジションのピッチ画像上の座標（左上がこの座標にあう）https://note.nkmk.me/python-pillow-paste/
     player_image_position = mock_position_position_data[formation][position_name]
-    #選手名を入れる座標は、X座標はユニ画像サイズの半分右に、Y座標は30上にそれぞれユニ画像の座標からずらす
-    player_name_position = (player_image_position[0]+HALF_PLAYER_IMAGE_SIZE, player_image_position[1]-OFFSET_PLAYERNAME_Y_POSITION)
 
     #ユニ画像を小さくリサイズして取得
     uniform_image = Image.open(get_resolve_path(f"{PLAYER_UNIFORM_FOLDER_PATH}/uniform_{number}.png")).resize((PLAYER_IMAGE_WIDTH,PLAYER_IMAGE_HEIGHT))
     #背景のピッチ画像を取得
-    formation_image = Image.open(get_resolve_path(FORMATION_IMAGE_PATH))
+    formation_image = Image.open(get_resolve_path(FORMATION_IMAGE_PATH)).convert("RGBA")
 
     #ユニ画像の透過を効かせるため、スタメン画像と同じサイズの透明な画像を用意して載せる https://qiita.com/iso12800jp/items/a74852ebfd3041065aeb
     clear_back_img_for_uniform = Image.new("RGBA", formation_image.size, (255, 255, 255, 0))
     clear_back_img_for_uniform.paste(uniform_image, player_image_position)
 
-    #alpha_compositeは両方RGBAじゃないとだめなのでフォーメーション画像もRGBAにする
-    clear_back_img_for_formation = Image.new("RGBA", formation_image.size, (255, 255, 255, 0))
-    clear_back_img_for_formation.paste(formation_image)
+    #ユニ画像合成
+    formation_image = Image.alpha_composite(formation_image, clear_back_img_for_uniform)
 
-    formation_image = Image.alpha_composite(clear_back_img_for_formation, clear_back_img_for_uniform)
-
-    #選手名描画（背景付き）
-    draw = ImageDraw.Draw(formation_image)
+    #選手名の背景描画
+    #透過したいので、透過用の背景を作る https://teratail.com/questions/132373
+    clear_back_img_for_name_back = Image.new("RGBA", formation_image.size, (255, 255, 255, 0))
+    #透過背景に対してdraw
+    draw = ImageDraw.Draw(clear_back_img_for_name_back)
     font = ImageFont.truetype(get_resolve_path(FONT_PATH), PLAYER_NAME_FONT_SIZE)
 
-    #選手名に背景色をつける
+    #背景をつける範囲を取得（名前の座標は中央なので背景エリアの左上、右下の座標をマージン込みで算出）
+    #TODO:名前が一定以上長くなった場合2列にしたほうがいい
+    #選手名を入れる座標取得（X座標はユニ画像サイズの半分右に、Y座標は30上にそれぞれユニ画像の座標からずらす）
+    player_name_position = (player_image_position[0]+HALF_PLAYER_IMAGE_SIZE, player_image_position[1]-OFFSET_PLAYERNAME_Y_POSITION)
+
     player_name_area = draw.textsize(player_name, font)
     name_x = player_name_position[0]
     name_y = player_name_position[1]
@@ -157,12 +159,16 @@ def generate_formation_image(formation, team_id, position_name, number):
     name_x_offset = player_name_area[0]/2+8
     name_y_offset = player_name_area[1]/2+8
     player_name_backgroud_position = (name_x-name_x_offset, name_y-name_y_offset, name_x+name_x_offset, name_y+name_y_offset)
-    #とりあえず背景は白塗り
-    draw.rectangle(player_name_backgroud_position, fill=(255,255,255))
 
-    #選手名描画
+    #背景は半透明な白
+    draw.rectangle(player_name_backgroud_position, fill=(255,255,255,180))
+    #選手名背景合成
+    formation_image = Image.alpha_composite(formation_image, clear_back_img_for_name_back)
+
+    #選手名描画。こちらは元の画像に描画する（既に背景が入ってる状態）
+    draw = ImageDraw.Draw(formation_image)
+    #文字描画
     draw.text(player_name_position, player_name, font=font, fill="black", align="center", anchor="mm")
-
     #編集し終わったピッチ画像を保存
     formation_image.save(get_resolve_path(FORMATION_IMAGE_PATH))
 
@@ -192,12 +198,12 @@ def put_uniform_color(team_color:tuple):
     """
     uniform_img = Image.open(get_resolve_path(DEFAULT_UNIFORM_IMAGE_PATH))
     default_color = (255,255,255)
+    #aないと怒られる
     r, g, b, a = uniform_img.split()
 
     _r = r.point(lambda _: 1 if _ == default_color[0] else 0, mode="1")
     _g = g.point(lambda _: 1 if _ == default_color[1] else 0, mode="1")
     _b = b.point(lambda _: 1 if _ == default_color[2] else 0, mode="1")
-    _a = a.point(lambda _: 1 if _ == 0 else 0, mode="1")
 
     mask = ImageChops.logical_and(_r, _g)
     mask = ImageChops.logical_and(mask, _b)
