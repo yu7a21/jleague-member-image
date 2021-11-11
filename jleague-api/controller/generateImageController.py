@@ -80,6 +80,15 @@ mock_position_position_data = {
 }
 
 def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data):
+    """指定されたデータでフォーメーション画像の作成を行う。
+
+    :param image_info: 画像生成に必要な情報（チームID、フォーメーション）をもつdict。空だった場合mockを使う。
+    :type image_info: dict
+    :param position_data: 各ポジションと背番号の組み合わせのdict。空だった場合mockを使う。
+    :type position_data: dict
+    :return: [description]
+    :rtype: [type]
+    """
     #TODO:DBを見る処理はmodelにかくべき
     color_list = Team.query.filter_by(id=image_info["team_id"]).first().color.split(",")
     team_color = (int(color_list[0]), int(color_list[1]), int(color_list[2]))
@@ -96,8 +105,9 @@ def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_
     Image.open(get_resolve_path(INIT_FIELD_IMAGE_PATH)).copy().save(get_resolve_path(FORMATION_IMAGE_PATH))
 
     #背番号とポジションの対応を見て各ポジションにユニ画像・名前文字列を配置
+    #TODO:攻撃方向を示す矢印とかおいた方がいいかも
     for position, number in position_data.items():
-        generate_formation_image(image_info["formation"], image_info["team_id"], position, number)
+        generate_formation_image(image_info["formation"], image_info["team_id"], position, str(number))
 
     #全選手分作ったユニを削除
     shutil.rmtree(get_resolve_path(PLAYER_UNIFORM_FOLDER_PATH))
@@ -108,19 +118,18 @@ def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_
     #TODO:完成したスタメン画像返す https://takake-blog.com/python-flask/#2
     return "success"
 
-#TODO:もっと分割できるかも
-def generate_formation_image(formation, team_id, position_name, number):
-    """
-    スタメン画像に1選手のユニ画像・名前を入れる
+#TODO:もっと分割できそう
+def generate_formation_image(formation:str, team_id:int, position_name:str, number:str):
+    """引数で指定された背番号の選手のユニ画像・選手名をフォーメーション画像に描画する
 
-    :param formation: [description]
-    :type formation: [type]
-    :param team_id: [description]
-    :type team_id: [type]
-    :param position_name: [description]
-    :type position_name: [type]
-    :param number: [description]
-    :type number: [type]
+    :param formation: フォーメーション(ex:4-4-2)
+    :type formation: str
+    :param team_id: チームID
+    :type team_id: int
+    :param position_name: 選手のポジション名(ex:CF)
+    :type position_name: str
+    :param number: 選手の背番号
+    :type number: str
     """
     #TODO:英語名と日本語名選べるようにする？
     player_name = Player.query.filter_by(team_id=team_id, number=number).first().name_ja
@@ -173,9 +182,10 @@ def generate_formation_image(formation, team_id, position_name, number):
     formation_image.save(get_resolve_path(FORMATION_IMAGE_PATH))
 
 def generate_uniform_image(number:str):
-    """
-    ユニフォームに背番号を入れる
+    """ユニフォーム画像に背番号を入れ背番号の入ったファイル名で保存する
 
+    :param number: 入れる背番号
+    :type number: str
     """
     uniform_img = Image.open(get_resolve_path(TEAM_COLOR_UNIFORM_PATH))
     #描画開始
@@ -188,12 +198,10 @@ def generate_uniform_image(number:str):
     uniform_img.save(get_resolve_path(f"{PLAYER_UNIFORM_FOLDER_PATH}/uniform_{number}.png"))
 
 
-#処理内容:https://qiita.com/pashango2/items/d6dda5f07109ee5b6163
 def put_uniform_color(team_color:tuple):
-    """
-    元のユニフォーム画像をチームカラーに変換
+    """デフォルトのユニフォーム画像（白）をチームカラーで置換する。処理内容:https://qiita.com/pashango2/items/d6dda5f07109ee5b6163
 
-    :param team_color: [description]
+    :param team_color: チームカラーのRGB値
     :type team_color: tuple
     """
     uniform_img = Image.open(get_resolve_path(DEFAULT_UNIFORM_IMAGE_PATH))
@@ -212,6 +220,13 @@ def put_uniform_color(team_color:tuple):
     uniform_img.save(get_resolve_path(TEAM_COLOR_UNIFORM_PATH))
 
 def get_resolve_path(path:str):
+    """絶対パスを取得する
+
+    :param path: このファイルからの相対パス
+    :type path: str
+    :return: 絶対パス
+    :rtype: str
+    """
     current_path = os.getcwd()
     return f"{current_path}/jleague-api/controller/{path}"
 
