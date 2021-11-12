@@ -20,7 +20,7 @@ TEAM_COLOR_UNIFORM_PATH = f"{RESOURCE_FOLDER_PATH}/team_color_uniform.png"
 FORMATION_IMAGE_PATH = f"{RESOURCE_FOLDER_PATH}/formation_image.png"
 
 
-PLAYER_IMAGE_WIDTH=80 #スタメン画像に表示するときのユニ画像の1辺
+PLAYER_IMAGE_WIDTH=90 #スタメン画像に表示するときのユニ画像の1辺
 PLAYER_IMAGE_HEIGHT=81 #スタメン画像に表示するときのユニ画像の1辺
 HALF_PLAYER_IMAGE_SIZE = int(PLAYER_IMAGE_WIDTH/2) #ユニ画像の1辺の半分。選手名描画の座標で使うが普通に2でわるとfloatになるのでここでintにしてる
 OFFSET_PLAYERNAME_Y_POSITION = 30 #ユニ画像からどれだけ上に選手名を描画するか
