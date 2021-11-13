@@ -6,7 +6,7 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 #画像フォルダ
-RESOURCE_FOLDER_PATH = "../resource"
+RESOURCE_FOLDER_PATH = "/resource"
 #背番号を入れたユニ画像を入れるフォルダ
 PLAYER_UNIFORM_FOLDER_PATH = f"{RESOURCE_FOLDER_PATH}/player_uniform"
 #ピッチの初期画像

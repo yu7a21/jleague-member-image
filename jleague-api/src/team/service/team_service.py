@@ -5,15 +5,16 @@ class TeamService():
     def __init__(self) -> None:
         self.team_repository = TeamRepository()
 
-    def find_one_by_id(self, id:int) -> Team or None:
+    def find_one_by_id(self, id:int) -> Team:
         """
         チーム情報をIDで取得する
 
         :param id: チームID
         :type id: int
         :return: 取得したチーム情報
-        :rtype: Team or None
+        :rtype: Team
         """
+        #チームが存在するかチェック
         return self.team_repository.find_one_by_id(id)
 
     def find_all(self) -> list:

@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
-from error import response_error
-
 from src.player.service.player_service import PlayerService
+
+from src.utils.error import response_error
+from src.utils.error import TeamNotFoundException
+from src.utils.error import PlayerNotFoundException
 
 def player(team_id:int, team_name:str) -> dict:
     """
@@ -16,13 +18,15 @@ def player(team_id:int, team_name:str) -> dict:
     :rtype: dict
     """
     player_service = PlayerService()
-    if team_id:
-        players_list = player_service.find_all_by_team_id(team_id)
-        #TODO:チームの存在チェックとエラーハンドリングはserviceでやる
-        if len(players_list) == 0:
-            return response_error(f"指定されたチームIDのチームは存在しないか、選手が一人も登録されていません。 指定されたID:{team_id}", HTTPStatus.BAD_REQUEST)
-    elif team_name:
-        players_list = player_service.find_all_by_team_name(team_name)
+    try:
+        if team_id:
+            players_list = player_service.find_all_by_team_id(team_id)
+        elif team_name:
+            players_list = player_service.find_all_by_team_name(team_name)
+    except (PlayerNotFoundException, TeamNotFoundException) as e:
+        return response_error(e.message, e.status)
+    except Exception as e:
+        return response_error(e, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     ret = {}
     for result in players_list:

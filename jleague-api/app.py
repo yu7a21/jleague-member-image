@@ -1,8 +1,8 @@
 from http import HTTPStatus
-from flask import Flask, Response, request
+from flask import Flask, request
 
 from config.db_config import init_db
-from error import response_error
+from src.utils.error import response_error
 
 from src.generate_image.controller.generate_image_controller import generate_image
 from src.player.controller.player_controller import player
@@ -20,7 +20,7 @@ def teams():
     team_id = request.args.get("team_id", "")
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
-    return team(int(team_id))
+    return team(team_id)
 
 @app.route('/players')
 def players():
@@ -28,11 +28,11 @@ def players():
     team_name = request.args.get("team_name", "")
 
     if not (is_empty_str(team_id) ^ is_empty_str(team_name)):
-        return response_error("チームIDもしくはチーム名どちらか片方のみを必ず指定してください", HTTPStatus.BAD_REQUEST)
+        return response_error("チームIDもしくはチーム名どちらか片方のみ、必ず指定してください", HTTPStatus.BAD_REQUEST)
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
 
-    return player(int(team_id), team_name)
+    return player(team_id, team_name)
 
 @app.route('/generate_image')
 def generate_images():

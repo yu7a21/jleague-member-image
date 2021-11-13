@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
-from error import response_error
-
 from src.team.service.team_service import TeamService
+
+from src.utils.error import response_error
+from src.utils.error import TeamNotFoundException
+from src.utils.error import PlayerNotFoundException
 
 def team(team_id:int) -> dict:
     """
@@ -14,13 +16,17 @@ def team(team_id:int) -> dict:
     :rtype: dict
     """
     team_service = TeamService()
-    if team_id:
-        team = team_service.find_one_by_id(team_id)
-        if team is None:
-            return response_error(f"指定されたチームIDのチームは存在しません 指定されたID:{team_id}", HTTPStatus.BAD_REQUEST)
-        team_list = [team]
-    else:
-        team_list = team_service.find_all()
+    try:
+        if team_id:
+            team_list = [team_service.find_one_by_id(team_id)]
+        else:
+            team_list = team_service.find_all()
+    except PlayerNotFoundException as e:
+        return response_error(e.message, e.status)
+    except TeamNotFoundException as e:
+        return response_error(e.message, e.status)
+    except Exception as e:
+        return response_error(e, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     dict = {}
     for result in team_list:

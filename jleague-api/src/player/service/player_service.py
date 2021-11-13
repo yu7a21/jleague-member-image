@@ -15,10 +15,6 @@ class PlayerService():
         :return: 選手リスト
         :rtype: list
         """
-        #チームが存在するかチェック
-        if self.team_repository.find_one_by_id(team_id) is None:
-            return []
-
         return self.player_repository.find_all_by_team_id(team_id)
 
 
@@ -31,10 +27,4 @@ class PlayerService():
         :return: 選手リスト
         :rtype: list
         """
-        #チームが存在するかチェック
-        team = self.team_repository.find_one_by_name(team_name)
-        if team is None:
-            return []
-        else:
-            team_id = team.id
-        return self.player_repository.find_all_by_team_id(team_id)
+        return self.player_repository.find_all_by_team_id(self.team_repository.find_one_by_name(team_name).id)

@@ -18,7 +18,12 @@ mock_position_data = {
     "LSB":4, #原
     "GK":37 #権田
 }
+from http import HTTPStatus
 from src.generate_image.service.generate_image_service import GenerateImageService
+
+from src.utils.error import response_error
+from src.utils.error import TeamNotFoundException
+from src.utils.error import PlayerNotFoundException
 
 def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data) -> dict:
     """
@@ -31,18 +36,26 @@ def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_
     :return: 画像へのパス
     :rtype: dict
     """
-    generate_image_service = GenerateImageService(image_info, position_data)
 
-    #先に画像色をチームカラーに置換
-    generate_image_service.change_uniform_color()
+    try:
+        generate_image_service = GenerateImageService(image_info, position_data)
 
-    #背番号を全選手分いれる
-    generate_image_service.write_number_to_uniform_image()
+        #先に画像色をチームカラーに置換
+        generate_image_service.change_uniform_color()
 
-    #ユニ画像・名前文字列の入った画像を作成
-    formation_image_path = generate_image_service.write_uniform_and_name_to_formation_image()
+        #背番号を全選手分いれる
+        generate_image_service.write_number_to_uniform_image()
 
-    #後片付け
-    generate_image_service.clean_up_resources()
+        #ユニ画像・名前文字列の入った画像を作成
+        formation_image_path = generate_image_service.write_uniform_and_name_to_formation_image()
+
+        #後片付け
+        generate_image_service.clean_up_resources()
+    except (TeamNotFoundException, PlayerNotFoundException) as e:
+        generate_image_service.clean_up_resources()
+        return response_error(e.message, e.status)
+    except Exception as e:
+        generate_image_service.clean_up_resources()
+        return response_error(e, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     return {"image_path":formation_image_path}

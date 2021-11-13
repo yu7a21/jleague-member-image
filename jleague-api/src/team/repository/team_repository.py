@@ -1,4 +1,5 @@
 from src.team.model.team import Team
+from src.utils.error import TeamNotFoundException
 
 class TeamRepository():
     def __init__(self):
@@ -13,7 +14,7 @@ class TeamRepository():
         """
         return self.team.query.all()
 
-    def find_one_by_id(self, id:int) -> Team or None:
+    def find_one_by_id(self, id:int) -> Team:
         """
         チームをIDで検索する
 
@@ -22,9 +23,12 @@ class TeamRepository():
         :return: チーム情報。ヒットしなかったらNoneを返す
         :rtype: Team or None
         """
-        return self.team.query.filter_by(id=id).one_or_none()
+        team = self.team.query.filter_by(id=id).one_or_none()
+        if team is None:
+            raise TeamNotFoundException(f"指定されたチームIDのチームは存在しません 指定されたID:{id}")
+        return team
 
-    def find_one_by_name(self, name:str) -> Team or None:
+    def find_one_by_name(self, name:str) -> Team:
         """
         チームを名前で検索する
 
@@ -33,4 +37,7 @@ class TeamRepository():
         :return: チーム情報。ヒットしなかったらNoneを返す
         :rtype: Team or None
         """
-        return self.team.query.filter_by(name=name).one_or_none()
+        team = self.team.query.filter_by(name=name).one_or_none()
+        if team is None:
+            raise TeamNotFoundException(f"指定されたチーム名のチームは存在しません 指定されたチーム名:{name}")
+        return team

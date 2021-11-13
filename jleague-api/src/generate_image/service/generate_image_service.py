@@ -85,7 +85,6 @@ class GenerateImageService():
         :return: 作成された画像のパス
         :rtype: str
         """
-
         #先にピッチ画像をコピーしておく
         Image.open(self.get_resolve_path(config.INIT_FIELD_IMAGE_PATH)).copy().save(self.get_resolve_path(config.FORMATION_IMAGE_PATH))
 
@@ -124,7 +123,6 @@ class GenerateImageService():
         #画像保存
         uniform_img.save(self.get_resolve_path(f"{config.PLAYER_UNIFORM_FOLDER_PATH}/uniform_{number}.png"))
 
-    #TODO:もっと分割できそう
     def generate_formation_image(self, position_name:str, number:int) -> None:
         """
         スタメン画像に1人分のユニ画像・名前を入れる
@@ -194,4 +192,4 @@ class GenerateImageService():
         :rtype: str
         """
         current_path = os.getcwd()
-        return f"{current_path}/jleague-api/controller/{path}"
+        return f"{current_path}/jleague-api/{path}"
