@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from flask import Flask, request
+import json
 
 from config.db_config import init_db
 from src.utils.error import response_error
@@ -15,12 +16,12 @@ db = init_db(app)
 def index():
     return "Hello"
 
-@app.route('/teams')
+@app.route('/teams', methods=["GET"])
 def teams():
     team_id = request.args.get("team_id", "")
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
-    return team(team_id)
+    return team(team_id, methods=["GET"])
 
 @app.route('/players')
 def players():
@@ -34,9 +35,18 @@ def players():
 
     return player(team_id, team_name)
 
+#TODO:フロントできたらPOST指定する
 @app.route('/generate_image')
 def generate_images():
-    return generate_image()
+    req_json = request.json
+    if req_json is None:
+        #TODO:フロントが動くようになったら消す
+        return generate_image()
+        return response_error("画像生成用のデータがありません", HTTPStatus.BAD_REQUEST)
+    else:
+        req_dict = json.loads(req_json)
+        #TODO:中身のチェック、せめてkeyくらいは
+        return generate_image(req_dict["image_info"], req_dict["position_data"])
 
 def is_empty_str(str:str):
     return str == ""

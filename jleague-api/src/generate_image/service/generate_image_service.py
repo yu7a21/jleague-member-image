@@ -105,6 +105,8 @@ class GenerateImageService():
 
         #色変更した画像削除
         os.remove(self.get_resolve_path(config.TEAM_COLOR_UNIFORM_PATH))
+        
+        #TODO:完成した画像をs3に保存するようになったらローカルのスタメン画像も消す
 
     def generate_uniform_image(self, number:str) -> None:
         """
@@ -113,6 +115,7 @@ class GenerateImageService():
         :param number: 入れる背番号
         :type number: str
         """
+        #TODO:一応、同時にアクセスされる時のために名前にuuidつけたほうがいい
         uniform_img = Image.open(self.get_resolve_path(config.TEAM_COLOR_UNIFORM_PATH))
         #描画開始
         draw = ImageDraw.Draw(uniform_img)
