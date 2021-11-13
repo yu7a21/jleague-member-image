@@ -7,10 +7,10 @@ from config import config
 from error import response_error
 from controller.teamController import team
 from controller.playerController import player
-from controller.generateImageController import generate_image
+
+from src.generate_image.controller.generate_image_controller import generate_image
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{config.db_user}:{config.db_password}@{config.db_host}/{config.db_database}?charset=utf8"
 db = init_db(app)
 
 @app.route('/')
