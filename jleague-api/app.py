@@ -1,14 +1,12 @@
 from http import HTTPStatus
 from flask import Flask, Response, request
-import json
 
 from config.db_config import init_db
-from config import config
 from error import response_error
-from controller.teamController import team
-from controller.playerController import player
 
 from src.generate_image.controller.generate_image_controller import generate_image
+from src.player.controller.player_controller import player
+from src.team.controller.team_controller import team
 
 app = Flask(__name__)
 db = init_db(app)
@@ -22,7 +20,7 @@ def teams():
     team_id = request.args.get("team_id", "")
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
-    return team(team_id)
+    return team(int(team_id))
 
 @app.route('/players')
 def players():
@@ -34,7 +32,7 @@ def players():
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
 
-    return player(team_id, team_name)
+    return player(int(team_id), team_name)
 
 @app.route('/generate_image')
 def generate_images():

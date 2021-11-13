@@ -20,7 +20,17 @@ mock_position_data = {
 }
 from src.generate_image.service.generate_image_service import GenerateImageService
 
-def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data):
+def generate_image(image_info:dict = mock_image_info, position_data:dict = mock_position_data) -> dict:
+    """
+    スタメン画像のパスを返却する
+
+    :param image_info: フロントから送られてくる画像生成に必要なデータ, defaults to mock_image_info
+    :type image_info: dict, optional
+    :param position_data: フロントから送られてくるポジションデータ, defaults to mock_position_data
+    :type position_data: dict, optional
+    :return: 画像へのパス
+    :rtype: dict
+    """
     generate_image_service = GenerateImageService(image_info, position_data)
 
     #先に画像色をチームカラーに置換

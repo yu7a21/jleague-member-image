@@ -1,6 +1,8 @@
 from config.db_config import db
 
 class Player(db.Model):
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     name_ja = db.Column(db.String(100), nullable=False)
     name_en = db.Column(db.String(100), nullable=False)

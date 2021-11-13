@@ -1,9 +1,11 @@
 #https://hashikake.com/Pillow
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 import os, shutil
-from model.player import Player
-from model.team import Team
+
 from config import config
+
+from src.player.repository.player_repository import PlayerRepository
+from src.team.repository.team_repository import TeamRepository
 
 #各フォーメーションごと、ポジションの座標データ
 #座標取得:http://wisteriahill.sakura.ne.jp/OpenCV/getArea4Haartraining/
@@ -42,11 +44,12 @@ class GenerateImageService():
         self.team_id = image_info["team_id"]
         self.formation = image_info["formation"]
 
-        #TODO:DBを見る処理はmodelにかくべき
-        self.color_list = Team.query.filter_by(id=image_info["team_id"]).first().color.split(",")
-        self.team_color = (int(self.color_list[0]), int(self.color_list[1]), int(self.color_list[2]))
+        self.player_repository = PlayerRepository()
+        self.team_repository = TeamRepository()
 
-    def change_uniform_color(self):
+        self.team_color = self.team_repository.find_one_by_id(self.team_id).convert_color_str_to_tuple()
+
+    def change_uniform_color(self) -> None:
         """
         デフォルトのユニフォーム画像（白）をチームカラーで置換する。処理内容:https://qiita.com/pashango2/items/d6dda5f07109ee5b6163
 
@@ -66,7 +69,7 @@ class GenerateImageService():
         uniform_img.paste(Image.new("RGB", uniform_img.size, self.team_color), mask=mask)
         uniform_img.save(self.get_resolve_path(config.TEAM_COLOR_UNIFORM_PATH))
 
-    def write_number_to_uniform_image(self):
+    def write_number_to_uniform_image(self) -> None:
         """
         11人分の背番号入りユニ画像を作成
         """
@@ -75,9 +78,12 @@ class GenerateImageService():
         for number in self.position_data.values():
             self.generate_uniform_image(str(number))
 
-    def write_uniform_and_name_to_formation_image(self):
+    def write_uniform_and_name_to_formation_image(self) -> str:
         """
         全選手のユニ画像・名前が入ったスタメン画像を作成
+
+        :return: 作成された画像のパス
+        :rtype: str
         """
 
         #先にピッチ画像をコピーしておく
@@ -86,9 +92,12 @@ class GenerateImageService():
         #背番号とポジションの対応を見て各ポジションにユニ画像・名前文字列を配置
         #TODO:攻撃方向を示す矢印とかおいた方がいいかも
         for position, number in self.position_data.items():
-            self.generate_formation_image(position, str(number))
+            self.generate_formation_image(position, int(number))
 
-    def clean_up_resources(self):
+        #TODO:画像をs3に保存してそのパスを返す
+        return ""
+
+    def clean_up_resources(self) -> None:
         """
         今回の処理で作られたユニ画像を削除
         """
@@ -98,7 +107,7 @@ class GenerateImageService():
         #色変更した画像削除
         os.remove(self.get_resolve_path(config.TEAM_COLOR_UNIFORM_PATH))
 
-    def generate_uniform_image(self, number:str):
+    def generate_uniform_image(self, number:str) -> None:
         """
         ユニフォーム画像に背番号を入れ背番号の入ったファイル名で保存する
 
@@ -116,20 +125,17 @@ class GenerateImageService():
         uniform_img.save(self.get_resolve_path(f"{config.PLAYER_UNIFORM_FOLDER_PATH}/uniform_{number}.png"))
 
     #TODO:もっと分割できそう
-    def generate_formation_image(self, position_name:str, number:str):
-        """引数で指定された背番号の選手のユニ画像・選手名をフォーメーション画像に描画する
+    def generate_formation_image(self, position_name:str, number:int) -> None:
+        """
+        スタメン画像に1人分のユニ画像・名前を入れる
 
-        :param formation: フォーメーション(ex:4-4-2)
-        :type formation: str
-        :param team_id: チームID
-        :type team_id: int
-        :param position_name: 選手のポジション名(ex:CF)
+        :param position_name: 選手を合成するポジション名
         :type position_name: str
-        :param number: 選手の背番号
-        :type number: str
+        :param number: 背番号
+        :type number: int
         """
         #TODO:英語名と日本語名選べるようにする？
-        player_name = Player.query.filter_by(team_id=self.team_id, number=number).first().name_ja
+        player_name = self.player_repository.find_one_by_team_id_and_number(self.team_id, number).name_ja
 
         #各ポジションのピッチ画像上の座標（左上がこの座標にあう）https://note.nkmk.me/python-pillow-paste/
         player_image_position = mock_position_position_data[self.formation][position_name]
@@ -178,9 +184,7 @@ class GenerateImageService():
         #編集し終わったピッチ画像を保存
         formation_image.save(self.get_resolve_path(config.FORMATION_IMAGE_PATH))
 
-        #TODO:画像をs3に保存してそのパスを返す
-
-    def get_resolve_path(self, path:str):
+    def get_resolve_path(self, path:str) -> str:
         """
         絶対パスを取得する
 
