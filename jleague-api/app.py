@@ -16,12 +16,12 @@ db = init_db(app)
 def index():
     return "Hello"
 
-@app.route('/teams', methods=["GET"])
+@app.route('/teams')
 def teams():
     team_id = request.args.get("team_id", "")
     if not str.isdigit(team_id) and team_id != "":
         return response_error("チームIDに数字以外が設定されています", HTTPStatus.BAD_REQUEST)
-    return team(team_id, methods=["GET"])
+    return team(team_id)
 
 @app.route('/players')
 def players():

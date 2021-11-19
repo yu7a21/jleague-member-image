@@ -4,3 +4,4 @@ batch_log.txt
 
 *__pycache__
 *.DS_Store
+*formation_image.png

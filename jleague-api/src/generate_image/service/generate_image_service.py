@@ -9,7 +9,7 @@ from src.team.repository.team_repository import TeamRepository
 
 #各フォーメーションごと、ポジションの座標データ
 #座標取得:http://wisteriahill.sakura.ne.jp/OpenCV/getArea4Haartraining/
-mock_position_position_data = {
+position_position_data = {
     "4-4-2":{
         "RCF": (290,260),
         "LCF": (290,462),
@@ -59,13 +59,17 @@ class GenerateImageService():
         #aないと怒られる
         r, g, b, a = uniform_img.split()
 
+        #r,g,bそれぞれ255の場所を1にした画像を作る
         _r = r.point(lambda _: 1 if _ == default_color[0] else 0, mode="1")
         _g = g.point(lambda _: 1 if _ == default_color[1] else 0, mode="1")
         _b = b.point(lambda _: 1 if _ == default_color[2] else 0, mode="1")
 
+        #andでr,g,bの2値画像全てが1の場所を求め、マスク画像を作る
         mask = ImageChops.logical_and(_r, _g)
         mask = ImageChops.logical_and(mask, _b)
 
+        #paste()はpillowのメソッドで、画像に別の画像を貼り付けられる。
+        #maskを指定することでマスク処理を行える。
         uniform_img.paste(Image.new("RGB", uniform_img.size, self.team_color), mask=mask)
         uniform_img.save(self.get_resolve_path(config.TEAM_COLOR_UNIFORM_PATH))
 
@@ -139,7 +143,7 @@ class GenerateImageService():
         player_name = self.player_repository.find_one_by_team_id_and_number(self.team_id, number).name_ja
 
         #各ポジションのピッチ画像上の座標（左上がこの座標にあう）https://note.nkmk.me/python-pillow-paste/
-        player_image_position = mock_position_position_data[self.formation][position_name]
+        player_image_position = position_position_data[self.formation][position_name]
 
         #ユニ画像を小さくリサイズして取得
         uniform_image = Image.open(self.get_resolve_path(f"{config.PLAYER_UNIFORM_FOLDER_PATH}/uniform_{number}.png")).resize((config.PLAYER_IMAGE_WIDTH,config.PLAYER_IMAGE_HEIGHT))
